@@ -41,6 +41,13 @@ category: "blog"
 
 #### 3. 部屋の大きさに合わせた「投写距離」
 
+<figure style="text-align: center; margin: 20px auto;">
+  <img src="/images/blog/projection_distance.webp" alt="投写距離シュミレーションの図" width="800" height="450" style="display: block; margin: 0 auto;" />
+  <figcaption style="margin-top: 5px; font-size: 0.9em; color: #6b7280;">
+    参照：<a href="https://www.epson.jp/products/bizprojector/simulator/" target="_blank">EPSON 投写距離シュミレーター</a>
+  </figcaption>
+</figure>
+
 プロジェクターは、機種によって「どれくらいの距離から、どれくらいの大きさの画面を映せるか」が異なります。これを「投写距離」と呼びます。
 
 ##### 失敗しないための「設置シミュレーション」

@@ -1,4 +1,4 @@
-// app/blog/[slug]/page.tsx
+// app/news/[slug]/page.tsx
 
 // @ts-nocheck 
 
@@ -164,9 +164,9 @@ export default async function Post({ params }: { params: { slug: string } }) {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
           {/* 戻るボタン */}
-          <Link href="/blog" className="inline-flex items-center text-blue-600 hover:text-blue-800 transition duration-150 mb-8 font-medium">
+          <Link href="/news" className="inline-flex items-center text-blue-600 hover:text-blue-800 transition duration-150 mb-8 font-medium">
             <ArrowLeft className="w-5 h-5 mr-1" />
-            ブログ一覧に戻る
+            ニュース一覧に戻る
           </Link>
 
           {/* 記事ヘッダー（タイトルとメタ情報） */}
@@ -230,8 +230,12 @@ export default async function Post({ params }: { params: { slug: string } }) {
 
 // 動的なルーティングに必要な全てのslugを生成
 export async function generateStaticParams() {
-  const posts = getAllPostSlugs();
-  return posts.map(slug => ({
-    slug: slug,
-  }));
+  const allSlugs = getAllPostSlugs(); // getSortedPostsDataではなくgetAllPostSlugsを使う
+  
+  // ★ ニュース記事のみをフィルタリングします
+  const newsSlugs = allSlugs
+    .filter(post => post.category && post.category.toLowerCase() === 'news')
+    .map(post => ({ slug: post.slug }));
+
+  return newsSlugs;
 }

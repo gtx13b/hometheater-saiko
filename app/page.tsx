@@ -138,7 +138,7 @@ const HomePage = () => {
                     <ul className="space-y-4">
                         {newsPosts.map(item => (
                             <li key={item.slug} className="border-b border-gray-100 pb-4 last:border-b-0 last:pb-0">
-                                <Link href={`/blog/${item.slug}`} className="group block hover:bg-gray-100 p-2 -mx-2 rounded transition duration-150">
+                                <Link href={`/news/${item.slug}`} className="group block hover:bg-gray-100 p-2 -mx-2 rounded transition duration-150">
                                     <p className="text-sm text-gray-500 mb-1">{item.date}</p>
                                     <p className="text-lg font-medium text-gray-800 group-hover:text-blue-600 flex items-center">
                                         {item.title}

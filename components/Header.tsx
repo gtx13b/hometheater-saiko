@@ -31,12 +31,9 @@ const Header: React.FC = () => {
           </h1>
 
           {/* 💡 ホバー時の光沢アニメーションは今回は控えめに削除、またはモノトーンなハイライトに */}
-          {/* もし残すなら以下のように修正:
-          <span className="absolute inset-0 block bg-gradient-to-r from-transparent via-gray-200/50 to-transparent opacity-0 group-hover:opacity-10 transition duration-500 transform -translate-x-full group-hover:translate-x-full"></span>
-          */}
         </Link>
         
-        {/* 1. デスクトップ用ナビゲーション */}
+        {/* 1. デスクトップ用ナビゲーション (お問い合わせを削除) */}
         <div className="hidden md:flex space-x-6">
           <Link 
             href="/about" 
@@ -66,13 +63,7 @@ const Header: React.FC = () => {
             設置・空間設計
             <span className="absolute left-0 bottom-0 w-full h-0.5 bg-gray-900 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
           </Link>
-          <Link 
-            href="/contact" 
-            className="text-gray-600 text-lg hover:text-gray-900 transition duration-300 font-medium relative group"
-          >
-            お問い合わせ
-            <span className="absolute left-0 bottom-0 w-full h-0.5 bg-gray-900 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
-          </Link>
+          {/* ★★★ お問い合わせリンクを削除 ★★★ */}
         </div>
 
         {/* 2. モバイル用ハンバーガーボタン */}
@@ -102,7 +93,7 @@ const Header: React.FC = () => {
         </button>
       </nav>
 
-      {/* 3. モバイルメニュー本体 */}
+      {/* 3. モバイルメニュー本体 (お問い合わせを削除) */}
       <nav
         className={`
           md:hidden 
@@ -132,13 +123,30 @@ const Header: React.FC = () => {
         >
           このサイトについて
         </Link>
+        
         <Link 
-          href="/contact" 
+          href="/gear-guide" 
           className="block text-gray-700 text-lg p-4 hover:bg-gray-100 transition"
           onClick={closeMenu}
         >
-          お問い合わせ
+          機材選びの基本
         </Link>
+        <Link 
+          href="/budget-systems" 
+          className="block text-gray-700 text-lg p-4 hover:bg-gray-100 transition"
+          onClick={closeMenu}
+        >
+          おすすめ構成
+        </Link>
+        <Link 
+          href="/installation" 
+          className="block text-gray-700 text-lg p-4 hover:bg-gray-100 transition"
+          onClick={closeMenu}
+        >
+          設置・空間設計
+        </Link>
+        
+        {/* ★★★ お問い合わせリンクを削除 ★★★ */}
       </nav>
     </header>
   );

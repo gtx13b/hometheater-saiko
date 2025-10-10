@@ -39,17 +39,31 @@ const Header: React.FC = () => {
         {/* 1. デスクトップ用ナビゲーション */}
         <div className="hidden md:flex space-x-6">
           <Link 
-            href="/" 
-            className="text-gray-600 text-lg hover:text-gray-900 transition duration-300 font-medium relative group"
-          >
-            ホーム
-            <span className="absolute left-0 bottom-0 w-full h-0.5 bg-gray-900 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
-          </Link>
-          <Link 
             href="/about" 
             className="text-gray-600 text-lg hover:text-gray-900 transition duration-300 font-medium relative group"
           >
             このサイトについて
+            <span className="absolute left-0 bottom-0 w-full h-0.5 bg-gray-900 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+          </Link>
+          <Link 
+            href="/gear-guide" 
+            className="text-gray-600 text-lg hover:text-gray-900 transition duration-300 font-medium relative group"
+          >
+            機材選びの基本
+            <span className="absolute left-0 bottom-0 w-full h-0.5 bg-gray-900 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+          </Link>
+          <Link 
+            href="/budget-systems" 
+            className="text-gray-600 text-lg hover:text-gray-900 transition duration-300 font-medium relative group"
+          >
+            おすすめ構成
+            <span className="absolute left-0 bottom-0 w-full h-0.5 bg-gray-900 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+          </Link>
+          <Link 
+            href="/installation" 
+            className="text-gray-600 text-lg hover:text-gray-900 transition duration-300 font-medium relative group"
+          >
+            設置・空間設計
             <span className="absolute left-0 bottom-0 w-full h-0.5 bg-gray-900 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
           </Link>
           <Link 

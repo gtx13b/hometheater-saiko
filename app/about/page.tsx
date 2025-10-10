@@ -19,7 +19,7 @@ const AboutPage = () => {
           <p className="text-sm font-medium uppercase tracking-widest text-gray-500 mb-2">
             OUR PHILOSOPHY
           </p>
-          <h1 className="text-5xl sm:text-7xl font-extrabold tracking-tighter text-gray-900 mb-6">
+          <h1 className="text-5xl sm:text-7xl font-extrabold tracking-tighter text-gray-900 mb-6 leading-snug">
             日常を「感動」で満たす。
           </h1>
           <p className="text-lg sm:text-xl font-light text-gray-500 max-w-2xl mx-auto">
@@ -69,10 +69,10 @@ const AboutPage = () => {
             ３．このサイト「ホームシアター最高！」を立ち上げた、私の熱意
           </h2>
           <p className="text-xl leading-relaxed mb-6 text-gray-700">
-            このサイトは、私自身の**「この感動を、一人でも多くの人に味わってほしい！」** という、シンプルで熱い想いから生まれました。
+            このサイトは、私自身の「この感動を、一人でも多くの人に味わってほしい！」 という、シンプルで熱い想いから生まれました。
           </p>
           <p className="text-xl leading-relaxed mb-6 text-gray-700">
-            私自身、数々の環境でホームシアターを構築し、試行錯誤を重ねてきました。巷の情報は製品スペックばかりで、本当に知りたい**「この機材を買ったら、自分の部屋でどんな体験が得られるのか？」**という核心的な情報が不足していました。
+            私自身、数々の環境でホームシアターを構築し、試行錯誤を重ねてきました。巷の情報は製品スペックばかりで、本当に知りたい「この機材を買ったら、自分の部屋でどんな体験が得られるのか？」という核心的な情報が不足していました。
           </p>
           {/* 強調部分の色をグレー系に変更 */}
           <p className="text-2xl font-semibold text-gray-900 p-6 border border-gray-300 rounded-xl bg-gray-50 shadow-md">

@@ -148,7 +148,8 @@ const BudgetSystemsPage = () => {
 
             {/* 最適解戦略 */}
             <div className="mt-6 p-4 border-l-4 border-gray-400 bg-gray-50 rounded-md">
-              <h3 className="text-xl font-bold text-gray-900 mb-2">💡 {system.category === 'ハイエンド入門' ? 'ハイエンド入門' : system.category}の最適解</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">💡 {system.table[0].category === 'ハイエンド入門' ? 'ハイエンド入門' : system.table[0].category
+  }の最適解</h3>
               <p className="text-lg text-gray-700">{system.strategy}</p>
             </div>
           </section>

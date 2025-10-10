@@ -16,10 +16,7 @@
     "react-markdown": "^10.1.0",
     "rehype-raw": "^7.0.0",
     "remark": "^15.0.1",
-    "remark-html": "^16.0.1",
-    "engines": {
-    "node": ">=20.0.0" 
-  }
+    "remark-html": "^16.0.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -29,5 +26,8 @@
     "cross-env": "^10.1.0",
     "tailwindcss": "^4",
     "typescript": "^5"
+  },
+  "engines": {
+    "node": ">=20.0.0" 
   }
 }

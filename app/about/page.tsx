@@ -128,9 +128,6 @@ const AboutPage = () => {
           <p className="text-3xl font-black text-gray-900 mb-8 tracking-tight">
             ぜひ、この感動の旅を一緒に始めましょう！
           </p>
-          <p className="mt-8 text-sm text-gray-400 italic">
-            — ホームシアター普及委員会 — 
-          </p>
         </section>
 
       </div>

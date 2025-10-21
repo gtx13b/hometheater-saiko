@@ -33,7 +33,7 @@ const coreContents = [
   {
     title: '設置・空間設計ガイド',
     description: '機材の性能を100%引き出すためのスピーカー配置、視聴距離、遮光、吸音のノウハウ。最高の没入感は「部屋づくり」で決まります。',
-    href: '/category/installation',
+    href: '/installation',
     icon: Layout,
     color: 'border-orange-500 bg-orange-50',
   },

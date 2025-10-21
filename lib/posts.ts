@@ -71,11 +71,32 @@ export function getFilteredPostsData(category: PostCategory): PostData[] {
 // 4. 単一の記事データ (メタ情報 + 本文) を取得する関数
 // ----------------------------------------------------
 export async function getPostData(slug: string): Promise<(PostData & { content: string }) | null> {
-    const fullPath = path.join(postsDirectory, `${slug}.md`);
+    
+    let decodedSlug = slug;
+    
+    // 🔥 修正箇所: URLエンコードされたslugをデコードする
+    try {
+        decodedSlug = decodeURIComponent(slug);
+    } catch (e) {
+        // デコードに失敗した場合は、元のslugを使用する
+        console.warn(`Slug decoding failed for: ${slug}`);
+    }
+
+    // デコードされたslugを使ってファイルパスを構築
+    const fullPath = path.join(postsDirectory, `${decodedSlug}.md`); 
     
     // ファイルが存在しない場合の処理
     if (!fs.existsSync(fullPath)) {
-        console.error(`Post not found: ${fullPath}`);
+        // デバッグ用: 見つからなかったパスをログに出力
+        console.error(`Post not found at path: ${fullPath}`);
+        // さらに、元のエンコードされたslugでファイルを探す保険も可能
+        if (decodedSlug !== slug) {
+             const originalPath = path.join(postsDirectory, `${slug}.md`);
+             if (fs.existsSync(originalPath)) {
+                 // まれにデコード不要な環境もあるため、元のslugで再度試みる
+                 return await getPostData(slug); // 再帰呼び出しで元のslugで処理
+             }
+        }
         return null;
     }
 
@@ -85,8 +106,10 @@ export async function getPostData(slug: string): Promise<(PostData & { content: 
     const matterResult = matter(fileContents);
 
     return {
-        slug,
+        // 戻り値のslugはデコードされたものを使用することが一般的
+        slug: decodedSlug, 
         title: matterResult.data.title,
+        // ... (他のプロパティは変更なし)
         date: matterResult.data.date,
         author: matterResult.data.author,
         category: matterResult.data.category || 'blog',

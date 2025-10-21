@@ -10,7 +10,7 @@ image: "/images/news/kefcoda-wphonohdmi-arc13yen.webp"
 
 
 <figure style="text-align: center; margin: 20px auto;">
-  <img src="/images/news/kefcoda-wphonohdmi-arc13yen-2.webp" alt="KEF coda-w" width="800" height="450" style="display: block; margin: 0 auto; border-radius: 8px;" />
+  <img src="/images/news/kefcoda-wphonohdmi-arc13yen.webp" alt="KEF coda-w" width="800" height="450" style="display: block; margin: 0 auto; border-radius: 8px;" />
   <figcaption style="margin-top: 8px; font-size: 0.9em; color: #6b7280;">
     参照：<a href="https://jp.kef.com/products/coda-w" target="_blank" style="color: #1d4ed8; text-decoration: underline;">KEF</a>
   </figcaption>

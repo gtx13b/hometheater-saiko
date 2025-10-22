@@ -1,4 +1,4 @@
-// app/news/[slug]/page.tsx
+// app/news/[slug]/page.tsx の修正後の全文
 
 // @ts-nocheck 
 
@@ -6,6 +6,7 @@ import { getPostData, getAllPostSlugs, PostData } from '../../../lib/posts';
 import Markdown from 'react-markdown';
 import { Metadata } from 'next';
 import Link from 'next/link';
+// next/image はそのまま使用
 import Image from 'next/image';
 import rehypeRaw from 'rehype-raw';
 import React from 'react';
@@ -14,7 +15,6 @@ import React from 'react';
 import { Calendar, User, ArrowLeft, Tag, ChevronRight } from 'lucide-react';
 
 // Tailwind CSSのTypographyプラグイン相当のスタイルをカスタムで定義
-// 💡 修正: markdownStylesをコンテナクラスとして定義し直します
 const markdownContainerClasses = `
   markdown-content 
   prose prose-xl 
@@ -28,29 +28,28 @@ const markdownContainerClasses = `
   prose-blockquote:border-l-4 prose-blockquote:border-blue-500 prose-blockquote:pl-4 prose-blockquote:rounded-r-lg
   prose-blockquote:bg-gray-50 prose-blockquote:py-3
   prose-blockquote:text-xs prose-blockquote:text-gray-700 prose-blockquote:italic
-  prose-code:bg-gray-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded
 `;
 
 // Markdownコンポーネントのカスタマイズ
 const customRenderers = {
   // Pタグのカスタマイズ
-p: ({ children }: { children: React.ReactNode }) => {
-  const textContent = React.Children.toArray(children).map(c =>
-    typeof c === 'string' ? c : ''
-  ).join('');
-  const isSource = textContent.startsWith('参照元：');
+  p: ({ children }: { children: React.ReactNode }) => {
+    const textContent = React.Children.toArray(children).map(c =>
+      typeof c === 'string' ? c : ''
+    ).join('');
+    const isSource = textContent.startsWith('参照元：');
 
-  if (isSource) {
-    return (
-      <p className="text-xs text-gray-500 my-4 leading-relaxed text-right">
-        {children}
-      </p>
-    );
-  }
+    if (isSource) {
+      return (
+        <p className="text-xs text-gray-500 my-4 leading-relaxed text-right">
+          {children}
+        </p>
+      );
+    }
 
-  // 通常の段落は prose のまま
-  return <p className="text-xl text-gray-700 my-6 leading-relaxed">{children}</p>;
-},
+    // 通常の段落は prose のまま
+    return <p className="text-xl text-gray-700 my-6 leading-relaxed">{children}</p>;
+  },
 
   // H2
   h2: ({ children }: { children: React.ReactNode }) => (
@@ -77,21 +76,21 @@ p: ({ children }: { children: React.ReactNode }) => {
   ),
 
   // OL（番号付きリスト）のレンダラー
-ol: ({ children, className }: { children: React.ReactNode; className?: string }) => (
+  ol: ({ children, className }: { children: React.ReactNode; className?: string }) => (
     <ol className={`list-decimal pl-8 my-6 space-y-3 ${className || 'text-gray-700'}`}>
       {children}
     </ol>
   ),
 
-// UL（箇条書き）のレンダラーはそのまま
-ul: ({ children }: { children: React.ReactNode }) => (
-  <ul className="list-disc pl-8 my-6 space-y-3 text-lg text-gray-700">{children}</ul>
-),
+  // UL（箇条書き）のレンダラーはそのまま
+  ul: ({ children }: { children: React.ReactNode }) => (
+    <ul className="list-disc pl-8 my-6 space-y-3 text-lg text-gray-700">{children}</ul>
+  ),
 
-// LI（リスト項目）共通
-li: ({ children }: { children: React.ReactNode }) => (
-  <li className="my-2">{children}</li>
-),
+  // LI（リスト項目）共通
+  li: ({ children }: { children: React.ReactNode }) => (
+    <li className="my-2">{children}</li>
+  ),
 
   // blockquote（引用）
   blockquote: ({ children }: { children: React.ReactNode }) => (
@@ -100,28 +99,42 @@ li: ({ children }: { children: React.ReactNode }) => (
     </blockquote>
   ),
 
-  // 画像
+  // 🔥 修正点: 画像レンダラーを <figure> でラップするロジックに変更
   img: (props: { alt?: string; src?: string }) => {
     if (!props.src) return null;
 
-    const width = 800;
-    const height = 450;
+    // Next.jsのImageコンポーネントを使用する場合、widthとheightが必要です。
+    // 今回は具体的なサイズ情報がないため、レスポンシブな幅の固定値を設定します。
+    // 適切なパフォーマンスのため、画像の実際のサイズ情報をここで設定するか、
+    // 親要素のサイズを制限する必要があります。
+    // 仮の値を設定し、layout="responsive" (Next.js 13以降では非推奨ですが、ここではサイズ設定のために使用)
+    const width = 1200; 
+    const height = 675; // 16:9 の比率
 
     return (
-      <div className="my-8 overflow-hidden rounded-xl shadow-xl w-full">
-        <Image
-          src={props.src}
-          alt={props.alt || '記事画像'}
-          width={width}
-          height={height}
-          layout="responsive"
-          objectFit="cover"
-          className="w-full h-auto"
-        />
+      // <figure> タグで画像をラップ
+      <figure className="flex flex-col items-center max-w-3xl mx-auto">
+        <div className="overflow-hidden rounded-xl shadow-xl w-full">
+            <Image
+              src={props.src}
+              alt={props.alt || '記事画像'}
+              width={width}
+              height={height}
+              // Next.js 13以降で推奨される fill/sizes/priority の代わりに
+              // 以前のバージョンのレスポンシブ動作を再現するため layout="responsive" を一時的に使用
+              layout="responsive" 
+              objectFit="cover"
+              className="w-full h-auto"
+            />
+        </div>
+        
+        {/* alt属性があれば <figcaption> として表示 */}
         {props.alt && (
-          <p className="text-center text-sm text-gray-500 mt-2 italic">{props.alt}</p>
+          <figcaption className="text-center text-sm text-gray-600 mt-3 p-3 max-w-full w-full rounded-b-lg">
+            {props.alt}
+          </figcaption>
         )}
-      </div>
+      </figure>
     );
   },
 };
@@ -175,8 +188,8 @@ export default async function Post({ params }: { params: { slug: string } }) {
             {/* カテゴリタグ */}
             <div className={`inline-flex items-center px-3 py-1 text-sm font-semibold rounded-full mb-4 
               ${postData.category === 'news' ? 'bg-orange-100 text-orange-700' : 'bg-blue-100 text-blue-700'}`}>
-                <Tag className="w-4 h-4 mr-1.5" />
-                {categoryName}
+              <Tag className="w-4 h-4 mr-1.5" />
+              {categoryName}
             </div>
 
             {/* 記事タイトル */}
@@ -200,7 +213,6 @@ export default async function Post({ params }: { params: { slug: string } }) {
           {/* 記事本文 */}
           <article className="max-w-3xl mx-auto">
             {/* Markdown表示部分にカスタムスタイルを適用 */}
-            {/* 💡 修正: classNameをこのdivに適用し、Markdownコンポーネントから削除しました */}
             <div className={markdownContainerClasses}>
               <Markdown 
                 components={customRenderers as any} 
@@ -230,12 +242,12 @@ export default async function Post({ params }: { params: { slug: string } }) {
 
 // 動的なルーティングに必要な全てのslugを生成
 export async function generateStaticParams() {
-  const allSlugs = getAllPostSlugs(); // getSortedPostsDataではなくgetAllPostSlugsを使う
+  const allSlugs = getAllPostSlugs();
   
   // ★ ニュース記事のみをフィルタリングします
   const newsSlugs = allSlugs
     .filter(post => post.category && post.category.toLowerCase() === 'news')
     .map(post => ({ slug: post.slug }));
 
-  return newsSlugs;
+  return newsSlugs;
 }

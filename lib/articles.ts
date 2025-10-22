@@ -1,9 +1,10 @@
 // lib/articles.ts
+
 import fs from 'fs/promises';
 import path from 'path';
 import matter from 'gray-matter';
 
-// Front Matterの型定義（必要に応じて追加）
+// Front Matterの型定義（既存のもの）
 export interface Article {
   slug: string;
   title: string;
@@ -11,8 +12,17 @@ export interface Article {
   category: 'blog' | 'news';
   description: string;
   author: string;
-  image: string;
+  image: string; // Front Matter内の image: の値
 }
+
+// 🔥 修正点A: altText を alt に変更し、Front Matter のキーと一致させる
+export interface FullArticle extends Article {
+    content: string; // 本文
+    imageUrl: string; // 参照URL
+    imageLinkName: string; // リンク名
+    alt: string; // 代替テキストのキーを 'alt' に統一
+}
+
 
 const articlesDirectory = path.join(process.cwd(), 'data/blog-articles');
 
@@ -51,4 +61,56 @@ export async function getAllArticles(): Promise<Article[]> {
       return -1;
     }
   });
+}
+
+// -----------------------------------------------------
+// 🔥 修正点B: 単一の記事をslugから取得する関数 (alt キーの読み込み)
+// -----------------------------------------------------
+export async function getArticleBySlug(slug: string): Promise<FullArticle | null> {
+    try {
+        const fullPath = path.join(articlesDirectory, `${slug}.md`);
+        const fileContents = await fs.readFile(fullPath, 'utf8');
+
+        // gray-matter で Front Matter と Content を同時にパース
+        const { data, content } = matter(fileContents);
+
+        let imageUrl = '';
+        let imageLinkName = '';
+        
+        // 記事登録APIで保存した参照情報（例: 'https://example.com|Example Site'）をパース
+        const reference = data.参照 as string | undefined;
+        if (reference) {
+            const parts = reference.split('|');
+            imageUrl = parts[0] || '';
+            imageLinkName = parts[1] || '';
+        }
+
+        // 必須プロパティとcontentを結合してFullArticleのオブジェクトを生成
+        return {
+            slug: slug,
+            content: content,
+            imageUrl: imageUrl,
+            imageLinkName: imageLinkName,
+            
+            // 🔥 修正点B-1: data.alt から値を取得するように変更
+            alt: (data.alt as string) || '',
+
+            // Front Matterのプロパティを明示的に指定してキャストし、
+            // 欠落を防ぎ、型を確定させる
+            title: data.title as string,
+            date: data.date as string,
+            category: data.category as 'blog' | 'news',
+            description: data.description as string,
+            author: data.author as string,
+            image: data.image as string,
+
+        } as FullArticle; // FullArticleとして型を確定
+
+    } catch (error: any) {
+        // ファイルが見つからない場合など
+        if (error.code === 'ENOENT') {
+            return null; 
+        }
+        throw error;
+    }
 }

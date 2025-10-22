@@ -1,18 +1,19 @@
 ---
 title: "エプソン、BOSEサウンドシステム搭載の4K超短焦点プロジェクターを発表。高画質と高音質、ネットフリックス対応で一体型ホームシアターを提案"
 date: "2025-10-14"
+description: ""
 author: "シアターマイスター"
 category: "news"
-image: "/images/news/epson_bose_ust_projector.webp"
+image: "/images/news/epson-bose-4k-ust-projector.webp"
+参照: "https://www.epson.jp/products/homeprojector/ehls670/|EPSON EH-LS670B/W"
+alt: "エプソンとBOSEがコラボした4K超短焦点プロジェクター"
 ---
-
 ## エプソン、最強のサウンドシステムを搭載した新プロジェクター
 
 エプソンは、リビングでのエンターテイメント体験を革新する4K対応の超短焦点プロジェクターの新モデルを発表しました。最大の注目点は、高音質オーディオブランドである**BOSE（ボーズ）のサウンドシステムを内蔵**している点です。映像と音響を一台で完結させる「オールインワン・ホームシアター」ソリューションとして市場に投入されます。
 
 <figure style="text-align: center; margin: 20px auto;">
-  <img src="/images/news/epson_bose_ust_projector.webp" alt="エプソンとBOSEがコラボした4K超短焦点プロジェクター" width="800" height="450" style="display: block; margin: 0 auto; border-radius: 8px;" />
-  
+  <img src="/images/news/epson-bose-4k-ust-projector.webp" alt="エプソンとBOSEがコラボした4K超短焦点プロジェクター" width="800" height="450" style="display: block; margin: 0 auto; border-radius: 8px;" />
   <figcaption style="margin-top: 8px; font-size: 0.9em; color: #6b7280;">
     参照：<a href="https://www.epson.jp/products/homeprojector/ehls670/" target="_blank" style="color: #1d4ed8; text-decoration: underline;">EPSON EH-LS670B/W</a>
   </figcaption>

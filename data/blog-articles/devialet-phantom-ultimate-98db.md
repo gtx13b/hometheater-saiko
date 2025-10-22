@@ -6,9 +6,8 @@ author: "シアターマイスター"
 category: "news"
 image: "/images/news/devialet-phantom-ultimate-98db.webp"
 参照: "https://www.devialet.com/ja-jp/phantom-speaker/phantom-ultimate-98db/|Devialet"
+alt: "Devialet Phantom Ultimate"
 ---
-
-
 <figure style="text-align: center; margin: 20px auto;">
   <img src="/images/news/devialet-phantom-ultimate-98db.webp" alt="Devialet Phantom Ultimate" width="800" height="450" style="display: block; margin: 0 auto; border-radius: 8px;" />
   <figcaption style="margin-top: 8px; font-size: 0.9em; color: #6b7280;">

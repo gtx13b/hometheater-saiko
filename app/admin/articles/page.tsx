@@ -2,7 +2,8 @@
 import { getAllArticles, Article } from '@/lib/articles';
 import Link from 'next/link';
 import AdminArticleActions from './admin-article-actions';
-import DeployButton from '@/components/DeployButton';
+// import DeployButton from '@/components/DeployButton'; // 元のVercelデプロイボタンをコメントアウト
+import LocalGitDeployButton from '@/components/LocalGitDeployButton'; // ★新しいローカルボタンをインポート
 
 export default async function AdminArticlesPage() {
   const articles: Article[] = await getAllArticles();
@@ -25,8 +26,8 @@ export default async function AdminArticlesPage() {
             新規ブログ登録
           </Link>
 
-          {/* 右端：デプロイボタン */}
-          <DeployButton />
+          {/* 右端：デプロイボタンを置き換え */}
+          <LocalGitDeployButton />
         </div>
       </div>
 

@@ -1,11 +1,12 @@
 ---
 title: "設置の常識が変わる！Dolby Atmos FlexConnectがワイヤレスシアターの未来を創る"
-date: "2025-06-05" 
+date: "2025-06-05"
+description: ""
 author: "シアターマイスター"
-slug: "dolby-atmos-flexconnect-tcl"
-category: "news"
+category: "blog"
+image: "/images/blog/dolby-atmos-flexconnect-tcl.webp"
+alt: ""
 ---
-
 ### 設置の常識が変わる！Dolby Atmos FlexConnectがワイヤレスシアターの未来を創る
 
 ホームシアター構築の最大の課題の一つ、それが「スピーカーの配置」です。しかし、この常識を根底から覆す新技術、Dolby Atmos FlexConnectの正式提供がTCLのテレビによって間近に迫っています。

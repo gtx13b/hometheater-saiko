@@ -6,6 +6,9 @@ import { Noto_Sans_JP } from 'next/font/google'; // Noto Sans JPをインポー�
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
+// 🔥 ScrollToTopButtonをインポート
+import ScrollToTopButton from '@/components/scroll-to-top-button';
+
 // Noto Sans JP を初期化し、ウェイト（太さ）を指定
 const notoSansJp = Noto_Sans_JP({ 
   subsets: ['latin'],
@@ -35,6 +38,8 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
+        {/* 🔥 全ページ共通で表示されるようにボタンを配置 */}
+        <ScrollToTopButton />
       </body>
     </html>
   );

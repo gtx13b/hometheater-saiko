@@ -1,16 +1,6 @@
-// app/news/page.tsx
-
 import Link from 'next/link';
 // getSortedPostsData と PostData の定義をインポート
 import { getSortedPostsData, PostData } from '@/lib/posts'; 
-
-// ===================================================
-// 💡 修正箇所: キャッシュを無効化する設定を追記
-// このページ（および依存データ）のキャッシュ時間を0秒に設定し、
-// デプロイ時に必ず最新のファイルを読み込むように強制します。
-export const dynamic = 'force-dynamic';
-// ===================================================
-
 
 /**
  * ニュース記事のみをフィルタリングする関数

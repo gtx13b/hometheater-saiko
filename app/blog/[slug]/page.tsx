@@ -11,7 +11,7 @@ import rehypeRaw from 'rehype-raw';
 import React from 'react';
 
 // アイコンをインポート
-import { Calendar, User, ArrowLeft, Tag, ChevronRight } from 'lucide-react';
+import { Calendar, User, ArrowLeft, Tag, ChevronRight, Edit } from 'lucide-react'; // ★ Editアイコンを追加
 
 // Tailwind CSSのTypographyプラグイン相当のスタイルをカスタムで定義
 // 💡 修正: markdownStylesをコンテナクラスとして定義し直します
@@ -158,16 +158,36 @@ export default async function Post({ params }: { params: { slug: string } }) {
   // カテゴリ名を日本語に変換
   const categoryName = postData.category === 'news' ? '業界ニュース' : 'ブログ・レビュー';
 
+  // ★ 開発環境判定と編集リンクの準備
+  const isDevelopment = process.env.NODE_ENV === 'development';
+  const editLink = `/admin/edit/${postData.slug}`;
+
   return (
     <div className="bg-white min-h-screen">
       <main className="pt-20 pb-32">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
-          {/* 戻るボタン */}
-          <Link href="/blog" className="inline-flex items-center text-blue-600 hover:text-blue-800 transition duration-150 mb-8 font-medium">
-            <ArrowLeft className="w-5 h-5 mr-1" />
-            ブログ一覧に戻る
-          </Link>
+          {/* 戻るボタンと編集ボタンのコンテナ (flexで左右に配置) */}
+          <div className="flex justify-between items-center mb-8">
+            {/* 戻るボタン */}
+            <Link href="/blog" className="inline-flex items-center text-blue-600 hover:text-blue-800 transition duration-150 font-medium">
+              <ArrowLeft className="w-5 h-5 mr-1" />
+              ブログ一覧に戻る
+            </Link>
+
+            {/* ★ 編集ボタンの追加 (開発環境のみ) ★ */}
+            {isDevelopment && (
+              <Link
+                href={editLink}
+                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-bold rounded-full shadow-lg text-white bg-red-500 hover:bg-red-600 transition duration-300 transform hover:scale-105"
+                title="開発環境: 記事編集ページへ"
+              >
+                <Edit className="w-4 h-4 mr-2" />
+                記事を編集
+              </Link>
+            )}
+            {/* ★ 編集ボタンの追加ここまで ★ */}
+          </div>
 
           {/* 記事ヘッダー（タイトルとメタ情報） */}
           <header className="border-b border-gray-200 pb-8 mb-12">

@@ -1,31 +1,31 @@
 @echo off
-ECHO ãƒ­ãƒ¼ã‚«ãƒ«ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã¸ç§»å‹•...
+ECHO ƒ[ƒJƒ‹ƒvƒƒWƒFƒNƒgƒfƒBƒŒƒNƒgƒŠ‚ÖˆÚ“®...
 cd C:\React\my-homepage
 
-ECHO å¤‰æ›´ã‚’ã‚¹ãƒ†ãƒ¼ã‚¸ãƒ³ã‚° (git add .)
+ECHO •ÏX‚ðƒXƒe[ƒWƒ“ƒO (git add .)
 git add .
 if %errorlevel% neq 0 goto ERROR_HANDLER
 
-ECHO ã‚³ãƒŸãƒƒãƒˆ (git commit)
+ECHO ƒRƒ~ƒbƒg (git commit)
 git commit -m "Automatic Update"
 if %errorlevel% neq 0 (
-    ECHO è­¦å‘Š: ã‚³ãƒŸãƒƒãƒˆã™ã‚‹å¤‰æ›´ãŒã‚ã‚Šã¾ã›ã‚“ã€‚ãƒ—ãƒƒã‚·ãƒ¥ã‚’ç¶šè¡Œã—ã¾ã™ã€‚
+    ECHO Œx: ƒRƒ~ƒbƒg‚·‚é•ÏX‚ª‚ ‚è‚Ü‚¹‚ñBƒvƒbƒVƒ…‚ð‘±s‚µ‚Ü‚·B
 )
 
-ECHO ãƒªãƒ¢ãƒ¼ãƒˆãƒªãƒã‚¸ãƒˆãƒªã¸ãƒ—ãƒƒã‚·ãƒ¥ (git push)
+ECHO ƒŠƒ‚[ƒgƒŠƒ|ƒWƒgƒŠ‚ÖƒvƒbƒVƒ… (git push)
 git push origin main
 if %errorlevel% neq 0 goto ERROR_HANDLER
 
 ECHO.
 ECHO ----------------------------------------------------
-ECHO ? Gitãƒ—ãƒƒã‚·ãƒ¥å®Œäº†ã€‚VercelãŒè‡ªå‹•ã§ãƒ“ãƒ«ãƒ‰ã‚’é–‹å§‹ã—ã¾ã™ã€‚
+ECHO ? GitƒvƒbƒVƒ…Š®—¹BVercel‚ªŽ©“®‚Åƒrƒ‹ƒh‚ðŠJŽn‚µ‚Ü‚·B
 ECHO ----------------------------------------------------
 goto END
 
 :ERROR_HANDLER
 ECHO.
 ECHO ----------------------------------------------------
-ECHO ? ã‚¨ãƒ©ãƒ¼ãŒç™ºç”Ÿã—ã¾ã—ãŸã€‚ã‚¿ãƒ¼ãƒŸãƒŠãƒ«ã§ç¢ºèªã—ã¦ãã ã•ã„ã€‚
+ECHO ? ƒGƒ‰[‚ª”­¶‚µ‚Ü‚µ‚½Bƒ^[ƒ~ƒiƒ‹‚ÅŠm”F‚µ‚Ä‚­‚¾‚³‚¢B
 ECHO ----------------------------------------------------
 
 :END

@@ -4,7 +4,8 @@ cd C:\React\my-homepage
 
 echo Gitリポジトリを更新します...
 git add .
-git commit -m "自動デプロイメント"
+git commit -m "自動更新"
 git push origin main
 
 echo デプロイメントが完了しました。
+pause

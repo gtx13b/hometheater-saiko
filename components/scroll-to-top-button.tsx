@@ -1,5 +1,4 @@
 // components/scroll-to-top-button.tsx
-
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -36,25 +35,25 @@ export default function ScrollToTopButton() {
     return (
         <button
             onClick={scrollToTop}
-            // Tailwind CSS クラスの変更点:
-            // 1. transition-all duration-500: 500msかけてすべてをアニメーション
-            // 2. opacity-0/100: 不透明度を0から100に切り替え
-            // 3. scale-75/100: ボタンサイズを75%から100%に切り替え
-            // 4. pointer-events-none/auto: 非表示時にクリックを無効化
-
             className={`
-                fixed bottom-8 right-8 bg-blue-600 hover:bg-blue-700 
-                text-white p-3 rounded-full shadow-lg z-40
-                transition-all duration-500 ease-in-out transform
+                // 固定位置: 画面下端、全幅
+                fixed bottom-0 left-0 right-0 w-full z-40 
+                bg-gray-800 hover:bg-gray-700 text-white 
+                
+                // 高さ・配置: 高さ約24px、中央揃え
+                py-4 flex items-center justify-center text-sm font-semibold
+                
+                // アニメーション: 表示/非表示
+                transition-all duration-300 ease-in-out
                 ${isVisible 
-                    ? 'opacity-100 scale-100 pointer-events-auto' 
-                    : 'opacity-0 scale-75 pointer-events-none'
+                    ? 'translate-y-0 opacity-100 pointer-events-auto' 
+                    : 'translate-y-full opacity-0 pointer-events-none'
                 }
             `}
             aria-label="ページトップへスクロール"
         >
-            <ChevronUp className="w-6 h-6" />
+            <ChevronUp className="w-4 h-4 mr-1" />
+            <span>TOPへ戻る</span>
         </button>
-        // 🔥 isVisibleに関係なくボタンを常にレンダリングすることで、CSSトランジションを有効にします
     );
 }

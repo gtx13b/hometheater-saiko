@@ -1,31 +1,30 @@
 // app/page.tsx
+// サーバーコンポーネント (デフォルト)
 
-import { Metadata } from 'next';
 import Link from 'next/link';
-// lib/posts から、フィルタリング関数をインポート
+// import { useState } from 'react'; // 👈 削除: サーバーコンポーネントなので不要
+
+// lib/posts から、フィルタリング関数をインポート (サーバーで実行される)
 import { getFilteredPostsData } from '../lib/posts'; 
 
-// アイコンをインポート（Lucide Reactを使用）
+// 🔥 新規作成: クライアント側でフッター開閉とチャットを管理するコンポーネントをインポート
+import ClientFeatures from '../components/ClientFeatures'; 
+
+// アイコンをインポート（サーバー側でも使用）
 import { 
-    ChevronRight, 
     DollarSign, 
     Speaker, 
     Layout, 
+    ChevronRight, 
     Rss, 
     Newspaper,
-    Settings,
-    List,
-    Plus, // 記事作成用にPlusアイコンも追加
 } from 'lucide-react'; 
 
-// ページのメタデータを設定（SEO対策）
-export const metadata: Metadata = {
-    title: 'ホームシアター最高！ | 失敗しない機材選び・予算別システム・空間設計の完全ガイド',
-    description: '初心者でも最高の感動と没入感を自宅で実現するためのホームシアター総合ガイドサイト。予算、機材、設置のすべてを徹底解説。',
-};
+// メタデータは app/metadata.ts に分離された前提です。
 
-// 主要コンテンツのデータ構造 (省略)
+// 主要コンテンツのデータ構造 (変更なし)
 const coreContents = [
+    // ... (元の coreContents の内容をここにペースト) ...
     {
         title: '予算別システム構成',
         description: '10万円から150万円まで。あなたの予算で最高の感動を実現するための具体的かつ最適な機材の組み合わせを提案します。',
@@ -49,11 +48,10 @@ const coreContents = [
     },
 ];
 
-const HomePage = () => {
-    // ニュース記事を取得し、最新の3件に制限
+// 🔥 HomePage を async にして、データをサーバーで取得
+export default async function HomePage() {
+    // データ取得をサーバー側 (fsが使用可能) で実行
     const newsPosts = getFilteredPostsData('news').slice(0, 3);
-    
-    // ブログ記事を取得し、最新の3件に制限
     const blogPosts = getFilteredPostsData('blog').slice(0, 3);
 
     return (
@@ -65,6 +63,7 @@ const HomePage = () => {
                     <div className="w-full h-full bg-cover bg-center" style={{ backgroundImage: "url('/images/hero_background.webp')" }} role="img" aria-label="暗い部屋に映る大画面のホームシアター" />
                 </div>
                 <div className="relative max-w-5xl mx-auto px-4 text-center z-10">
+                    {/* ... (ヒーローコンテンツは省略) ... */}
                     <p className="text-lg font-medium uppercase tracking-widest text-blue-400 mb-3">
                         YOUR ULTIMATE HOME THEATER GUIDE
                     </p>
@@ -88,6 +87,7 @@ const HomePage = () => {
 
             {/* 2. サイトのコアバリュー（3つの柱） ... (省略) */}
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+                {/* ... (コアコンテンツは省略) ... */}
                 <h2 className="text-4xl font-extrabold text-gray-900 text-center mb-16">
                     迷うのは、今日で終わり。3つの柱で失敗を防ぐ
                 </h2>
@@ -114,7 +114,7 @@ const HomePage = () => {
                 </div>
             </div>
 
-            {/* 3. 最新情報セクション (ニュースとブログ) ... (省略) */}
+            {/* 3. 最新情報セクション (ニュースとブログ) ... (動的データを使用) */}
             <div className="bg-gray-50 border-t border-b border-gray-200 py-20 sm:py-24">
                 <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                     <h2 className="text-4xl font-extrabold text-gray-900 text-center mb-16">
@@ -122,13 +122,11 @@ const HomePage = () => {
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                         
-                        {/* 3-1. 業界ニュース (動的データを使用) ... (省略) */}
+                        {/* 3-1. 業界ニュース */}
                         <div>
                             <div className="flex items-center mb-6 border-b border-gray-300 pb-2">
                                 <Newspaper className="w-6 h-6 text-gray-600 mr-2" />
-                                <h3 className="text-2xl font-bold text-gray-900">
-                                    業界ニュース
-                                </h3>
+                                <h3 className="text-2xl font-bold text-gray-900">業界ニュース</h3>
                                 <Link href="/news" className="ml-auto text-sm font-medium text-blue-600 hover:text-blue-800 flex items-center">
                                     一覧を見る <ChevronRight className="w-4 h-4 ml-1" />
                                 </Link>
@@ -148,13 +146,11 @@ const HomePage = () => {
                             </ul>
                         </div>
 
-                        {/* 3-2. ブログ・レビュー (動的データを使用) ... (省略) */}
+                        {/* 3-2. ブログ・レビュー */}
                         <div>
                             <div className="flex items-center mb-6 border-b border-gray-300 pb-2">
                                 <Rss className="w-6 h-6 text-gray-600 mr-2" />
-                                <h3 className="text-2xl font-bold text-gray-900">
-                                    ブログ・レビュー
-                                </h3>
+                                <h3 className="text-2xl font-bold text-gray-900">ブログ・レビュー</h3>
                                 <Link href="/blog" className="ml-auto text-sm font-medium text-blue-600 hover:text-blue-800 flex items-center">
                                     一覧を見る <ChevronRight className="w-4 h-4 ml-1" />
                                 </Link>
@@ -179,42 +175,30 @@ const HomePage = () => {
 
             {/* 4. なぜ「ホームシアター最高！」を選ぶのか (信頼性セクション) ... (省略) */}
             <div className="max-w-4xl mx-auto px-4 py-20 sm:py-24">
+                {/* ... (信頼性セクションの内容は省略) ... */}
                 <h2 className="text-3xl font-extrabold text-gray-900 text-center mb-12">
                     なぜ、このサイトが生まれたのか？
                 </h2>
                 <div className="space-y-10">
-                    {/* ... 信頼性セクションの内容は省略 ... */}
                     <div className="flex items-start space-x-6">
                         <span className="text-4xl font-bold text-blue-500">1</span>
                         <div>
-                            <h3 className="text-xl font-bold text-gray-900 mb-2">
-                                ユーザーと同じ「ホームシアター愛好家」の目線
-                            </h3>
-                            <p className="text-lg text-gray-700">
-                                私たちは販売業者でもインストール業者でもありません。ただ純粋に、自宅で映画やゲームの「最高の感動」を追求する一人の愛好家です。
-                            </p>
+                            <h3 className="text-xl font-bold text-gray-900 mb-2">ユーザーと同じ「ホームシアター愛好家」の目線</h3>
+                            <p className="text-lg text-gray-700">私たちは販売業者でもインストール業者でもありません。ただ純粋に、自宅で映画やゲームの「最高の感動」を追求する一人の愛好家です。</p>
                         </div>
                     </div>
                     <div className="flex items-start space-x-6">
                         <span className="text-4xl font-bold text-green-500">2</span>
                         <div>
-                            <h3 className="text-xl font-bold text-gray-900 mb-2">
-                                失敗談から学ぶ、リアルな情報
-                            </h3>
-                            <p className="text-lg text-gray-700">
-                                「あの時こうしておけば良かった」という自身の失敗や遠回りの経験に基づき、無駄な出費や後悔を避けるための実践的なアドバイスを提供します。
-                            </p>
+                            <h3 className="text-xl font-bold text-gray-900 mb-2">失敗談から学ぶ、リアルな情報</h3>
+                            <p className="text-lg text-gray-700">「あの時こうしておけば良かった」という自身の失敗や遠回りの経験に基づき、無駄な出費や後悔を避けるための実践的なアドバイスを提供します。</p>
                         </div>
                     </div>
                     <div className="flex items-start space-x-6">
                         <span className="text-4xl font-bold text-orange-500">3</span>
                         <div>
-                            <h3 className="text-xl font-bold text-gray-900 mb-2">
-                                小さな「最高！」を共有したい
-                            </h3>
-                            <p className="text-lg text-gray-700">
-                                ホームシアターの魅力は、スペックではなく「体験」です。誰もが手の届く範囲で、日常の中に小さな感動を生み出すヒントを共有することが、このサイトの存在意義です。
-                            </p>
+                            <h3 className="text-xl font-bold text-gray-900 mb-2">小さな「最高！」を共有したい</h3>
+                            <p className="text-lg text-gray-700">ホームシアターの魅力は、スペックではなく「体験」です。誰もが手の届く範囲で、日常の中に小さな感動を生み出すヒントを共有することが、このサイトの存在意義です。</p>
                         </div>
                     </div>
                 </div>
@@ -238,55 +222,16 @@ const HomePage = () => {
                     <ChevronRight className="w-5 h-5 ml-2" />
                 </Link>
                 
-                {/* コンテンツの最後に余白を追加することで、
-                    fixedフッターでコンテンツが隠れるのを防ぐ
-                */}
+                {/* 開発モード時のみ、管理者フッターのスペースを空ける */}
                 {process.env.NODE_ENV === 'development' && (
-                     <div className="h-16"></div> 
+                    <div className="h-16"></div> 
                 )}
             </div>
 
-            {/* 🔥 管理者向け固定フッターメニューの修正箇所 🔥 */}
-            {process.env.NODE_ENV === 'development' && (
-                <footer 
-                    className="fixed bottom-0 left-0 right-0 z-50 
-                                bg-gray-900/70 text-white 
-                                py-10 px-4 shadow-2xl backdrop-blur-sm" // 🔥 py-3 を py-5 に変更し、高さを拡大
-                >
-                    <div className="max-w-7xl mx-auto flex justify-center items-center space-x-8">
-                        
-                        <span className="text-xl font-semibold text-white-400 hidden sm:block">
-                            [開発モード]
-                        </span>
-
-                        {/* 記事管理ボタン: 幅を広く、文字を大きくし、フッターの高さで垂直パディングを調整するためボタン自体の py-2 は削除 */}
-                        <Link 
-                            href="/admin/articles" 
-                            className="flex items-center justify-center space-x-1 
-                                       bg-blue-600 hover:bg-blue-700 rounded-lg 
-                                       w-48 text-lg font-bold transition duration-150 py-3" 
-                        >
-                            <List className="w-5 h-5" />
-                            <span>記事管理一覧</span>
-                        </Link>
-
-                        {/* 記事作成ボタン: 幅を広く、文字を大きくし、フッターの高さで垂直パディングを調整するためボタン自体の py-2 は削除 */}
-                        <Link 
-                            href="/admin" 
-                            className="flex items-center justify-center space-x-1 
-                                       bg-green-600 hover:bg-green-700 rounded-lg 
-                                       w-48 text-lg font-bold transition duration-150 py-3"
-                        >
-                            <Plus className="w-5 h-5" />
-                            <span>新規記事作成</span>
-                        </Link>
-                        
-                    </div>
-                </footer>
-            )}
-            {/* 🔥 修正箇所 終わり 🔥 */}
+            {/* 🔥 クライアント側の機能（チャットボットと管理者フッター開閉）を分離 🔥 */}
+            <ClientFeatures />
         </div>
     );
-};
+}
 
-export default HomePage;
+// export default HomePage; (Next.js App Routerでは async functionは export default functionで十分です)

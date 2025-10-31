@@ -11,7 +11,7 @@ interface Document {
     text: string;
     url: string;
     title: string;
-    maker?: string[];     // メーカー名
+    maker?: string[];    // メーカー名
     equipment?: string[]; // 機材カテゴリー
 }
 
@@ -183,15 +183,16 @@ function prioritizeArticles(
     
     // クエリが完全に汎用的なら、調整せずに返す
     if (!isQuerySpecific) {
-        return articles; 
+        return articles.sort((a, b) => b.similarity - a.similarity); // 念のためソート
     }
 
     // 💡 1. 補正定数の定義
     const makerBoost = 0.60;              // メーカー名が一致した場合の超強力ブースト
-    const equipmentBoost = 0.20;          // 機材カテゴリーが一致した場合のブースト
+    const equipmentBoost = 0.15;          // 0.15に再調整
     const budgetBoost = 0.50;             // 💡 NEW: 予算意図が一致した場合の強力ブースト
-    const genericArticleAbsolutePenalty = 1.0; // 汎用記事（タグなし）を強制排除 (スコアを0.4未満に保証)
+    const genericArticleAbsolutePenalty = 1.0; // 特定メーカー質問時の汎用記事強制排除
     const specificMismatchPenalty = 0.45; // メーカータグがあるが、クエリのメーカーと不一致の場合のペナルティ
+    const genericArticleSoftPenalty = 0.45; // 🌟 NEW: 機材質問時、タグなし汎用記事への緩やかなペナルティ (0.30 -> 0.45に調整)
     
     // 予算マッチング用キーワード
     const budgetKeywords = ['予算', '価格', 'システム構成', 'コスト', '金額']; 
@@ -208,6 +209,7 @@ function prioritizeArticles(
         const hasMakerMatch = queryMaker.some(qM => normalizedArticleMakers.includes(qM));
         
         let newSimilarity = article.similarity;
+        const isGenericArticle = articleMakers.length === 0 && articleEquipment.length === 0;
 
         // --- ✨ 予算ブースティングロジック (メーカー/機材の前に適用) ✨ ---
         if (isBudgetQuery) {
@@ -217,28 +219,36 @@ function prioritizeArticles(
 
             if (isBudgetArticle) {
                 similarityBoost += budgetBoost;
-                console.log(`[RAG Boost - Budget] Applying strong budget boost to: ${article.title}`);
+                // console.log(`[RAG Boost - Budget] Applying strong budget boost to: ${article.title}`);
             }
         }
 
         // --- ✨ メーカー/機材ブースティング / ペナルティロジック ✨ ---
+        
         if (queryMaker.length > 0) {
             // 質問が特定のメーカーを指している場合
             if (articleMakers.length === 0) {
-                // 🚨 CASE: 特定のメーカーに関する質問だが、記事にメーカータグが全くない（汎用記事）
-                newSimilarity -= genericArticleAbsolutePenalty;
-                console.log(`[RAG Penalty - Generic] Applying absolute penalty to: ${article.title}. New score: ${newSimilarity.toFixed(4)}`);
+                // 🚨 CASE 1: 特定のメーカーに関する質問だが、記事にメーカータグが全くない（汎用記事）
+                newSimilarity -= genericArticleAbsolutePenalty; 
+                // console.log(`[RAG Penalty - Generic] Applying absolute penalty to: ${article.title}. New score: ${newSimilarity.toFixed(4)}`);
             } else if (hasMakerMatch) {
-                // CASE: メーカーが一致: 強力にブースト
+                // CASE 2: メーカーが一致: 強力にブースト
                 similarityBoost += makerBoost; 
-                console.log(`[RAG Boost - Match] Applying strong maker boost to: ${article.title}`);
+                // console.log(`[RAG Boost - Match] Applying strong maker boost to: ${article.title}`);
             } else {
-                // CASE: メーカーが不一致: 記事にはタグがあるが、クエリと異なるメーカー
+                // CASE 3: メーカーが不一致: 記事にはタグがあるが、クエリと異なるメーカー
                 similarityPenalty += specificMismatchPenalty;
-                console.log(`[RAG Penalty - Mismatch] Applying specific penalty to: ${article.title}`);
+                // console.log(`[RAG Penalty - Mismatch] Applying specific penalty to: ${article.title}`);
             }
         } 
         
+        // 🌟 NEW: 機材に関する質問（メーカーは不問）で、タグのない記事を緩やかにペナルティ
+        // Makerのペナルティが適用されていない場合のみ実行
+        if (queryMaker.length === 0 && queryEquipment.length > 0 && isGenericArticle) {
+             similarityPenalty += genericArticleSoftPenalty;
+             // console.log(`[RAG Penalty - Soft Generic] Applying soft penalty to: ${article.title}`);
+        }
+
         // Equipment matching logic (ブーストとして適用)
         const normalizedArticleEquipment = articleEquipment.map(normalizeForBoost);
         const hasEquipmentMatch = queryEquipment.some(qE => normalizedArticleEquipment.includes(qE));

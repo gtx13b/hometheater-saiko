@@ -1,11 +1,12 @@
 ---
 title: "Klipsch創業者の夢を叶える究極のフラッグシップ「Jubilee」が遂に市販化。不朽の名機「Klipschorn」も現代に合わせた大幅進化"
 date: "2025-10-12"
+description: ""
 author: "シアターマイスター"
 category: "news"
 image: "/images/news/klipsch_jubilee_klipschorn.webp"
+alt: ""
 ---
-
 ## Klipsch、伝説の集大成「Jubilee」を遂に一般発売
 
 <figure style="text-align: center; margin: 20px auto;">

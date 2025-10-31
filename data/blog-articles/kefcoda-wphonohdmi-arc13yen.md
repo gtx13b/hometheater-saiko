@@ -6,6 +6,8 @@ author: "シアターマイスター"
 category: "news"
 image: "/images/news/kefcoda-wphonohdmi-arc13yen.webp"
 参照: "https://jp.kef.com/products/coda-w|KEF"
+maker: "KEF"
+equipment: "スピーカー"
 alt: "KEF「CodaW」"
 ---
 <figure style="text-align: center; margin: 20px auto;">

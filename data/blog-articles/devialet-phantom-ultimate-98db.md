@@ -6,6 +6,8 @@ author: "シアターマイスター"
 category: "news"
 image: "/images/news/devialet-phantom-ultimate-98db.webp"
 参照: "https://www.devialet.com/ja-jp/phantom-speaker/phantom-ultimate-98db/|Devialet"
+maker: "Devialet, デビアレ"
+equipment: "スピーカー"
 alt: "Devialet Phantom Ultimate"
 ---
 <figure style="text-align: center; margin: 20px auto;">

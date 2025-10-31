@@ -1,7 +1,12 @@
-// postcss.config.js
-module.exports = {
+// 既存の CommonJS 形式 (module.exports) を
+// ES Module 形式 (export default) に変更します。
+
+const config = {
   plugins: {
-    'tailwindcss': {}, // 💡 Tailwind v3 の正しい書き方
-    'autoprefixer': {},
+    tailwindcss: {},
+    autoprefixer: {},
   },
 };
+
+// 💡 修正点: export default に変更
+export default config;

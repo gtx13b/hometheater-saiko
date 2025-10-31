@@ -1,4 +1,4 @@
-// app/api/create-article/route.ts
+// app/api/create-article/route.ts の修正後の全文
 
 import { NextResponse } from "next/server";
 import fs from "fs/promises";
@@ -42,10 +42,13 @@ export async function POST(req: Request) {
     const description = (formData.get("description") as string) || "";
     const author = (formData.get("author") as string) || "";
     
+    // 🔥 NEW: makerとequipmentを取得
+    const maker = (formData.get("maker") as string) || "";
+    const equipment = (formData.get("equipment") as string) || "";
+    
     const imageFile = formData.get("image") as File | null;
     const imageUrl = (formData.get("imageUrl") as string) || "";
     const imageLinkName = (formData.get("imageLinkName") as string) || "";
-    // altText のキー名はそのまま維持
     const altText = (formData.get("altText") as string) || ""; 
 
     // 2. バリデーション
@@ -69,12 +72,15 @@ export async function POST(req: Request) {
     const frontMatterImagePath = finalImagePath || "none"; 
     
     const referenceValue = imageUrl ? `${imageUrl}|${imageLinkName}` : "";
+    // 参照フィールドをFront Matterに追加
     let frontMatterReference = referenceValue ? `\n参照: "${referenceValue.replace(/"/g, '\\"')}"` : '';
+
+    // 🔥 NEW: makerとequipmentをFront Matterに追加
+    let frontMatterMaker = maker ? `\nmaker: "${maker.replace(/"/g, '\\"')}"` : '';
+    let frontMatterEquipment = equipment ? `\nequipment: "${equipment.replace(/"/g, '\\"')}"` : '';
     
     const finalContent = content.trim(); 
     
-    // 6. 🔥 削除済み: 画像の有無に基づき、新しい <figure> ブロックを生成するロジックを削除
-
     // 7. Markdownファイルの結合と保存
     const frontMatter = `---
 title: "${title.replace(/"/g, '\\"')}"
@@ -82,11 +88,11 @@ date: "${date}"
 description: "${description.replace(/"/g, '\\"')}"
 author: "${author.replace(/"/g, '\\"')}"
 category: "${category}"
-image: "${frontMatterImagePath}"${frontMatterReference}
+image: "${frontMatterImagePath}"${frontMatterReference}${frontMatterMaker}${frontMatterEquipment}
 alt: "${altText.replace(/"/g, '\\"')}"
 ---
 
-${finalContent}`; // 🔥 imageReferenceBlock が削除され、finalContent のみになった
+${finalContent}`;
 
     await fs.writeFile(filePathMd, frontMatter, "utf8");
 

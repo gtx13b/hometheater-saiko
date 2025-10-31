@@ -1,4 +1,4 @@
-// app/api/update-article/route.ts の全文 (Front Matterの改行を修正)
+// app/api/update-article/route.ts の修正後の全文
 
 import { NextResponse } from "next/server";
 import fs from "fs/promises";
@@ -59,6 +59,10 @@ export async function POST(req: Request) {
         const content: string = data.content || ""; 
         const description: string = data.description || "";
         const author: string = data.author || "";
+
+        // 🔥 NEW: makerとequipmentを取得
+        const maker: string = data.maker || "";
+        const equipment: string = data.equipment || "";
         
         const imageBase64: string | null = data.imageBase64 || null; 
         const oldImage: string = data.oldImage || ""; 
@@ -85,21 +89,32 @@ export async function POST(req: Request) {
           finalImagePath = "none";
         }
         
-        // 4. 🔥 本文処理: 先頭と末尾の空白（改行含む）を完全に除去
+        // 4. 本文処理: 先頭と末尾の空白（改行含む）を完全に除去
         const finalContentForSave = content.trim(); 
         
-        // 5. Front MatterとMarkdown本文を結合
+        // 5. Front Matterの準備
         const frontMatterImagePath = finalImagePath || "none"; 
         
-        const imageReferenceBlock = ""; 
-        
+        const imageReferenceBlock = ""; // 常に空
+
+        // 参照 (URL|名前) を Front Matter 形式で準備
         const referenceValue = imageUrl ? `${imageUrl}|${imageLinkName}` : "";
-        // frontMatterReferenceから先頭の \n を削除し、後で適切に追加する
-        let frontMatterReference = referenceValue ? `参照: "${referenceValue.replace(/"/g, '\\"')}"` : '';
+        // 参照行を生成。値があれば '参照: "..."\n' を、なければ空文字を生成
+        const frontMatterReferenceLine = referenceValue 
+            ? `参照: "${referenceValue.replace(/"/g, '\\"')}"\n` 
+            : '';
+
+        // 🔥 NEW: maker と equipment を Front Matter 形式で準備
+        const frontMatterMakerLine = maker 
+            ? `maker: "${maker.replace(/"/g, '\\"')}"\n` 
+            : '';
+        const frontMatterEquipmentLine = equipment 
+            ? `equipment: "${equipment.replace(/"/g, '\\"')}"\n` 
+            : '';
         
         const finalArticleContent = finalContentForSave; 
         
-        // 🔥 修正箇所: imageキー、参照キー、altキーが必ず改行で区切られるように調整
+        // 6. Markdownファイルの結合と保存
         const finalFileContent = `---
 title: "${title.replace(/"/g, '\\"')}"
 date: "${date}"
@@ -107,16 +122,8 @@ description: "${description.replace(/"/g, '\\"')}"
 author: "${author.replace(/"/g, '\\"')}"
 category: "${category}"
 image: "${frontMatterImagePath}"
-${frontMatterReference ? `${frontMatterReference}\n` : ''}alt: "${altText.replace(/"/g, '\\"')}"
+${frontMatterReferenceLine}${frontMatterMakerLine}${frontMatterEquipmentLine}alt: "${altText.replace(/"/g, '\\"')}"
 ---\n${imageReferenceBlock}${finalArticleContent}`;
-
-// 🔥🔥🔥 [重要] このログを追加してください 🔥🔥🔥
-        console.log("--- DEBUG: Final File Content (Alt Text Check) ---");
-        // altText の値だけを抜き出す
-        console.log(`Input Alt Text: "${altText}"`); 
-        console.log(`Front Matter Alt: "alt: "${altText.replace(/"/g, '\\"')}"`); 
-        console.log("-------------------------------");
-        // 🔥🔥🔥
 
         // ファイル書き込み
         const contentBuffer = Buffer.from(finalFileContent, 'utf8');

@@ -1,18 +1,20 @@
+// app/news/page.tsx
+
 import Link from 'next/link';
-// getSortedPostsData と PostData の定義をインポート
 import { getSortedPostsData, PostData } from '@/lib/posts'; 
+
+export const dynamic = 'force-dynamic';
 
 /**
  * ニュース記事のみをフィルタリングする関数
  */
 function getNewsPosts() {
   const allPosts = getSortedPostsData();
-  // categoryが'news'または'NEWS'の記事のみを抽出
   return allPosts.filter(post => post.category.toLowerCase() === 'news');
 }
 
 /**
- * 個々の記事カードコンポーネント (BlogCardとほぼ共通)
+ * 個々の記事カードコンポーネント
  */
 const NewsCard = ({ post }: { post: PostData }) => {
   const formattedDate = new Date(post.date).toLocaleDateString('ja-JP', {
@@ -21,15 +23,18 @@ const NewsCard = ({ post }: { post: PostData }) => {
     day: 'numeric',
   });
   
-  // 代替画像のURLを定義（publicディレクトリを参照）
-  const defaultImageUrl = '/images/default-blog-image.webp'; 
-  const imageUrl = (post.image && post.image.trim() !== '') ? post.image : defaultImageUrl;
+  // ✅ 代替画像を安全に設定
+  const defaultImageUrl = '/images/default-blog-image.webp';
+  const imageUrl =
+    post.image && post.image.trim() !== '' && post.image.toLowerCase() !== 'none'
+      ? post.image
+      : defaultImageUrl;
 
   return (
     <Link 
       href={`/news/${post.slug}`} 
       className="block bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group transform hover:-translate-y-1"
-      style={{ minHeight: '350px' }} // ニュースなので少し高さを抑えてもOK
+      style={{ minHeight: '350px' }}
     >
       {/* 記事画像 */}
       <div className="relative w-full h-40 bg-gray-100 overflow-hidden">
@@ -52,10 +57,12 @@ const NewsCard = ({ post }: { post: PostData }) => {
           </time>
         </div>
         
+        {/* 記事タイトル */}
         <h2 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-red-600 transition-colors">
           {post.title}
         </h2>
         
+        {/* 説明文 */}
         <p className="text-sm text-gray-600">
           業界の最新動向を素早くチェック。
         </p>
@@ -68,14 +75,12 @@ const NewsCard = ({ post }: { post: PostData }) => {
  * ニュース一覧ページコンポーネント
  */
 export default function NewsPage() {
-  // サーバー側でデータを取得し、ニュースのみにフィルタリング
   const newsPosts = getNewsPosts();
 
   return (
     <main className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         
-        {/* ヘッダーセクション：ニュース特化 */}
         <header className="text-center mb-12">
           <h1 className="text-4xl font-extrabold text-gray-900 sm:text-5xl lg:text-6xl tracking-tight">
             ホームシアター 業界ニュース
@@ -85,7 +90,6 @@ export default function NewsPage() {
           </p>
         </header>
 
-        {/* 記事グリッド */}
         {newsPosts.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {newsPosts.map((post) => (

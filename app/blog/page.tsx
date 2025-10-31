@@ -1,28 +1,15 @@
 // app/blog/page.tsx
 
 import Link from 'next/link';
-// getSortedPostsData と PostData の定義をインポート
 import { getSortedPostsData, PostData } from '@/lib/posts'; 
 
-// ===================================================
-// 💡 修正箇所: キャッシュを無効化する設定を追記
-// このページ（および依存データ）のキャッシュ時間を0秒に設定し、
-// デプロイ時に必ず最新のファイルを読み込むように強制します。
 export const dynamic = 'force-dynamic';
-// ===================================================
 
-/**
- * ニュース以外のブログ記事のみをフィルタリングする関数
- */
 function getBlogPosts() {
   const allPosts = getSortedPostsData();
-  // categoryが'news'ではない記事のみを抽出
   return allPosts.filter(post => post.category.toLowerCase() !== 'news');
 }
 
-/**
- * 個々の記事カードコンポーネント (Tailwind CSSを使用)
- */
 const BlogCard = ({ post }: { post: PostData }) => {
   const formattedDate = new Date(post.date).toLocaleDateString('ja-JP', {
     year: 'numeric',
@@ -30,10 +17,12 @@ const BlogCard = ({ post }: { post: PostData }) => {
     day: 'numeric',
   });
   
-  // 代替画像のURLを定義（publicディレクトリを参照）
-  const defaultImageUrl = '/images/default-blog-image.webp'; 
-  // 画像パスが falsy な場合に代替画像を使用する
-  const imageUrl = (post.image && post.image.trim() !== '') ? post.image : defaultImageUrl;
+  // ✅ 代替画像を安全に設定
+  const defaultImageUrl = '/images/default-blog-image.webp';
+  const imageUrl =
+    post.image && post.image.trim() !== '' && post.image.toLowerCase() !== 'none'
+      ? post.image
+      : defaultImageUrl;
 
   return (
     <Link 
@@ -53,7 +42,7 @@ const BlogCard = ({ post }: { post: PostData }) => {
       {/* コンテンツエリア */}
       <div className="p-6">
         <div className="flex items-center space-x-3 mb-3 text-sm">
-          {/* カテゴリータグ (ニュースとは色を変えて区別) */}
+          {/* カテゴリータグ */}
           <span className="px-3 py-1 bg-indigo-100 text-indigo-700 font-semibold rounded-full uppercase tracking-wider">
             {post.category}
           </span>
@@ -77,18 +66,13 @@ const BlogCard = ({ post }: { post: PostData }) => {
   );
 };
 
-/**
- * ブログ一覧ページコンポーネント
- */
 export default function BlogPage() {
-  // 修正後の関数を呼び出し、ブログ記事のみを取得
   const blogPosts = getBlogPosts();
 
   return (
     <main className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         
-        {/* ヘッダーセクション：ガイド・レビュー特化 */}
         <header className="text-center mb-12">
           <h1 className="text-4xl font-extrabold text-gray-900 sm:text-5xl lg:text-6xl tracking-tight">
             ホームシアター ガイド & レビュー
@@ -98,7 +82,6 @@ export default function BlogPage() {
           </p>
         </header>
 
-        {/* 記事グリッド */}
         {blogPosts.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
             {blogPosts.map((post) => (
@@ -106,7 +89,6 @@ export default function BlogPage() {
             ))}
           </div>
         ) : (
-          // 記事がない場合のメッセージ
           <div className="text-center py-20 bg-white rounded-xl shadow-lg">
             <p className="text-2xl font-semibold text-gray-700">
               現在、公開されているガイド・レビュー記事はありません。

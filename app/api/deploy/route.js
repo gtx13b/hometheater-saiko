@@ -1,67 +1,43 @@
-// app/api/deploy/route.ts
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server';
+import { execSync } from 'child_process';
+
+function run(cmd, cwd) {
+  return execSync(cmd, { cwd, encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] });
+}
 
 export async function POST() {
   try {
-    const vercelProjectId = process.env.VERCEL_PROJECT_ID;
-    const vercelToken = process.env.VERCEL_TOKEN;
+    const cwd = process.cwd();
+    const githubToken = process.env.GITHUB_TOKEN;
 
-    // 💡 環境変数が不足している場合、すぐにエラーを返す
-    if (!vercelProjectId || !vercelToken) {
-        return NextResponse.json(
-            { success: false, error: "VERCEL_PROJECT_ID または VERCEL_TOKEN が不足しています。" }, 
-            { status: 500 }
-        );
+    if (!githubToken) {
+      return NextResponse.json(
+        { success: false, error: 'GITHUB_TOKEN が .env.local に設定されていません。' },
+        { status: 500 }
+      );
     }
-    
-    // 💡 プロジェクトIDをURLに含める
-    const deploymentUrl = `https://api.vercel.com/v13/deployments?projectId=${vercelProjectId}`;
 
-    const response = await fetch(deploymentUrl, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${vercelToken}`, // トークンを使用
-        "Content-Type": "application/json",
-      },
-      // ... (body の内容はそのまま)
-      body: JSON.stringify({
-         name: process.env.VERCEL_PROJECT_NAME,
-         target: "production",
-         gitSource: {
-           type: "github",
-           org: "gtx13b",
-           repo: "hometheater-saiko",
-           ref: "main",
-         },
-      }),
+    // gitignore対象外の全ファイルをステージ
+    run('git add -A', cwd);
+
+    // ステージされた変更のみ確認
+    const staged = run('git diff --cached --name-only', cwd);
+    if (!staged.trim()) {
+      return NextResponse.json({ success: true, message: '変更なし。既に最新状態です。' });
+    }
+
+    const label = new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' });
+    run(`git commit -m "Update: ${label}"`, cwd);
+
+    const pushUrl = `https://gtx13b:${githubToken}@github.com/gtx13b/hometheater-saiko.git`;
+    run(`git push ${pushUrl} main`, cwd);
+
+    return NextResponse.json({
+      success: true,
+      message: 'GitHubへのプッシュ完了。Vercelが自動デプロイを開始します（1〜2分で反映）。',
     });
-
-    // 💡 レスポンスが空または不正なJSONでないかチェック
-    const responseText = await response.text(); // まずテキストとして取得
-    let data;
-    try {
-        data = JSON.parse(responseText);
-    } catch (e) {
-        // JSONパースエラーが発生した場合、空のレスポンスが原因
-        console.error("Failed to parse Vercel API response:", responseText);
-        return NextResponse.json({ 
-            success: false, 
-            error: "Vercel APIから不正なレスポンスを受信しました（認証エラーの可能性が高い）。" 
-        }, { status: 500 });
-    }
-    
-    // ... 成功/失敗のチェック
-    if (!response.ok) {
-        console.error("Vercel API Error:", data);
-        return NextResponse.json({ 
-            success: false, 
-            error: data.error?.message || "Vercel APIがエラーを返しました" 
-        }, { status: response.status });
-    }
-    
-    return NextResponse.json({ success: true, data });
   } catch (err) {
-    const message = err instanceof Error ? err.message : "不明なエラー";
+    const message = err.stderr || err.stdout || err.message || String(err);
     return NextResponse.json({ success: false, error: message }, { status: 500 });
   }
 }

@@ -59,9 +59,7 @@ export default async function HomePage() {
             
             {/* 1. ヒーローセクション ... (省略) */}
             <div className="relative bg-gray-900 text-white py-24 sm:py-32 overflow-hidden">
-                <div className="absolute inset-0 opacity-20">
-                    <div className="w-full h-full bg-cover bg-center" style={{ backgroundImage: "url('/images/hero_background.webp')" }} role="img" aria-label="暗い部屋に映る大画面のホームシアター" />
-                </div>
+                
                 <div className="relative max-w-5xl mx-auto px-4 text-center z-10">
                     {/* ... (ヒーローコンテンツは省略) ... */}
                     <p className="text-lg font-medium uppercase tracking-widest text-blue-400 mb-3">

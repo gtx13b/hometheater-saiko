@@ -9,6 +9,22 @@ import sharp from "sharp";
 // ヘルパー関数 (変更なし)
 // ==============================================================================
 
+async function downloadImageFromUrl(url: string, finalSlug: string, category: string): Promise<string> {
+    const res = await fetch(url, {
+        signal: AbortSignal.timeout(15000),
+        headers: { 'User-Agent': 'Mozilla/5.0' },
+    });
+    if (!res.ok) throw new Error(`画像取得失敗: ${res.status}`);
+    const buffer = Buffer.from(await res.arrayBuffer());
+    const lowerCaseCategory = (category || 'news').toLowerCase();
+    const webpBuffer = await sharp(buffer).webp({ quality: 85 }).toBuffer();
+    const imageName = `${finalSlug}.webp`;
+    const destDir = path.join(process.cwd(), "public", "images", lowerCaseCategory);
+    await fs.mkdir(destDir, { recursive: true });
+    await fs.writeFile(path.join(destDir, imageName), webpBuffer);
+    return `/images/${lowerCaseCategory}/${imageName}`;
+}
+
 /** Base64文字列を受け取り、WebPに変換してディスクに書き込む */
 async function writeImageFromBase64(base64Data: string, finalSlug: string, category: string): Promise<string> {
     const base64Image = base64Data.split(';base64,').pop();
@@ -64,9 +80,10 @@ export async function POST(req: Request) {
         const maker: string = data.maker || "";
         const equipment: string = data.equipment || "";
         
-        const imageBase64: string | null = data.imageBase64 || null; 
-        const oldImage: string = data.oldImage || ""; 
-        const deleteImage: boolean = data.deleteImage || false; 
+        const imageBase64: string | null = data.imageBase64 || null;
+        const imageFetchUrl: string = data.imageFetchUrl || "";
+        const oldImage: string = data.oldImage || "";
+        const deleteImage: boolean = data.deleteImage || false;
         const altText: string = data.altText || "";
         const imageUrl: string = data.imageUrl || "";
         const imageLinkName: string = data.imageLinkName || "";
@@ -80,12 +97,15 @@ export async function POST(req: Request) {
         
         let finalImagePath = oldImage; 
         
-        // 3. 画像の更新処理 (変更なし)
+        // 3. 画像の更新処理
         if (imageBase64) {
           if (oldImage) await deleteExistingImage(oldImage);
-          finalImagePath = await writeImageFromBase64(imageBase64, slug, category); 
-        } else if (deleteImage && oldImage && oldImage !== "none") { 
-          await deleteExistingImage(oldImage); 
+          finalImagePath = await writeImageFromBase64(imageBase64, slug, category);
+        } else if (imageFetchUrl) {
+          if (oldImage) await deleteExistingImage(oldImage);
+          finalImagePath = await downloadImageFromUrl(imageFetchUrl, slug, category);
+        } else if (deleteImage && oldImage && oldImage !== "none") {
+          await deleteExistingImage(oldImage);
           finalImagePath = "none";
         }
         

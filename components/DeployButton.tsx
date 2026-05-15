@@ -15,10 +15,9 @@ export default function DeployButton() {
       const data = await res.json();
 
       if (data.success) {
-        console.log(data.data); // デプロイIDなど確認用
-        setMessage("✅ デプロイを開始しました！");
+        setMessage("✅ " + (data.message || "デプロイを開始しました！"));
       } else {
-        setMessage("❌ デプロイに失敗しました: " + data.error);
+        setMessage("❌ " + data.error);
       }
     } catch (err: any) {
       setMessage("⚠️ 通信エラー: " + err.message);
@@ -28,15 +27,19 @@ export default function DeployButton() {
   };
 
   return (
-    <div className="flex justify-end">
+    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2">
+      {message && (
+        <div className="bg-gray-900 border border-gray-700 text-sm text-white px-4 py-2 rounded-lg shadow-lg max-w-xs text-right">
+          {message}
+        </div>
+      )}
       <button
         onClick={handleDeploy}
         disabled={loading}
-        className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+        className="px-5 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg transition-colors disabled:opacity-50"
       >
-        {loading ? "デプロイ中…" : "サイトを更新"}
+        {loading ? "デプロイ中..." : "🚀 サイトを更新"}
       </button>
-      {message && <p className="ml-4 text-sm">{message}</p>}
     </div>
   );
 }

@@ -26,7 +26,7 @@ const HT_KEYWORDS = [
   'ホームシアタースピーカー', 'フロアスタンディング',
 ];
 
-const EXCLUDE_KEYWORDS = [
+const DEFAULT_EXCLUDE_KEYWORDS = [
   'BDソフト', 'Blu-rayソフト', 'ブルーレイソフト', '4Kソフト', 'UHD-BD',
   'Netflix', 'Amazon Prime', 'Amazon Music', 'Disney+', 'Hulu', 'DAZN',
   '配信', 'ストリーミング',
@@ -46,7 +46,7 @@ interface NewsItem {
   source: string;
 }
 
-function parseItems(xml: string, sourceName: string): NewsItem[] {
+function parseItems(xml: string, sourceName: string, excludeKeywords: string[]): NewsItem[] {
   const items: NewsItem[] = [];
   const itemPattern = /<item[^>]*>([\s\S]*?)<\/item>/gi;
   let match;
@@ -65,7 +65,7 @@ function parseItems(xml: string, sourceName: string): NewsItem[] {
     const normalized = normalizeText(title + ' ' + description);
     const hasHT = HT_KEYWORDS.some((kw) => normalized.includes(normalizeText(kw)));
     if (!hasHT) continue;
-    const hasExclude = EXCLUDE_KEYWORDS.some((kw) => normalized.includes(normalizeText(kw)));
+    const hasExclude = excludeKeywords.some((kw) => kw && normalized.includes(normalizeText(kw)));
     if (hasExclude) continue;
 
     let dateStr = '';
@@ -82,8 +82,11 @@ function parseItems(xml: string, sourceName: string): NewsItem[] {
   return items;
 }
 
-export async function GET() {
+export async function POST(req: Request) {
   try {
+    const body = await req.json().catch(() => ({}));
+    const excludeKeywords: string[] = body.excludeKeywords ?? DEFAULT_EXCLUDE_KEYWORDS;
+
     const allItems: NewsItem[] = [];
     const seen = new Set<string>();
 
@@ -95,7 +98,7 @@ export async function GET() {
         });
         if (!res.ok) continue;
         const xml = await res.text();
-        const items = parseItems(xml, source.name);
+        const items = parseItems(xml, source.name, excludeKeywords);
         for (const item of items) {
           if (!seen.has(item.url)) {
             seen.add(item.url);

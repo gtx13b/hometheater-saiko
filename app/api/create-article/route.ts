@@ -7,7 +7,22 @@ import sharp from "sharp";
 
 const slugify = require("slugify"); 
 
-// writeImageToDisk 関数: 全ての画像をWebPに変換し、記事ID (スラッグ) をファイル名として保存
+async function downloadImageFromUrl(url: string, finalSlug: string, category: string): Promise<string> {
+    const res = await fetch(url, {
+        signal: AbortSignal.timeout(15000),
+        headers: { 'User-Agent': 'Mozilla/5.0' },
+    });
+    if (!res.ok) throw new Error(`画像取得失敗: ${res.status}`);
+    const buffer = Buffer.from(await res.arrayBuffer());
+    const lowerCaseCategory = category.toLowerCase();
+    const webpBuffer = await sharp(buffer).webp({ quality: 85 }).toBuffer();
+    const imageName = `${finalSlug}.webp`;
+    const destDir = path.join(process.cwd(), "public", "images", lowerCaseCategory);
+    await fs.mkdir(destDir, { recursive: true });
+    await fs.writeFile(path.join(destDir, imageName), webpBuffer);
+    return `/images/${lowerCaseCategory}/${imageName}`;
+}
+
 async function writeImageToDisk(file: File, finalSlug: string, category: string): Promise<string> {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
@@ -47,9 +62,10 @@ export async function POST(req: Request) {
     const equipment = (formData.get("equipment") as string) || "";
     
     const imageFile = formData.get("image") as File | null;
+    const imageFetchUrl = (formData.get("imageFetchUrl") as string) || "";
     const imageUrl = (formData.get("imageUrl") as string) || "";
     const imageLinkName = (formData.get("imageLinkName") as string) || "";
-    const altText = (formData.get("altText") as string) || ""; 
+    const altText = (formData.get("altText") as string) || "";
 
     // 2. バリデーション
     if (!title || !date || !content.trim() || !category) {
@@ -62,10 +78,12 @@ export async function POST(req: Request) {
     const dataDir = path.join(process.cwd(), "data/blog-articles");
     const filePathMd = path.join(dataDir, `${finalSlug}.md`);
 
-    // 4. 画像のアップロード処理（WebPに変換して保存）
-    let finalImagePath = ""; 
+    // 4. 画像の保存処理（ファイル優先、次にURL取得）
+    let finalImagePath = "";
     if (imageFile && imageFile.size > 0) {
-      finalImagePath = await writeImageToDisk(imageFile, finalSlug, category); 
+      finalImagePath = await writeImageToDisk(imageFile, finalSlug, category);
+    } else if (imageFetchUrl) {
+      finalImagePath = await downloadImageFromUrl(imageFetchUrl, finalSlug, category);
     }
     
     // 5. Front Matterの準備
